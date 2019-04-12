@@ -2,9 +2,9 @@
 # wget  https://raw.githubusercontent.com/arloor/iptablesUtils/master/iptables4ddns.sh;bash iptables4ddns.sh;rm -f iptables4ddns.sh;
 
 
-remotehost=example.com #中转目标host，自行修改
-localport=  #中转端口，自行修改
-remoteport=  #中转端口，自行修改
+remotehost=baidu.com #中转目标host，自行修改
+localport=8888  #中转端口，自行修改
+remoteport=80  #中转端口，自行修改
 
 red="\033[31m"
 black="\033[0m"
@@ -72,7 +72,7 @@ echo  重新设置iptables转发
 
 #删除旧的中转规则iptables -t nat  -D POSTROUTING
 rm -f deletePre.sh
-wget https://raw.githubusercontent.com/arloor/iptablesUtils/master/deletePre.sh
+wget https://raw.githubusercontent.com/arloor/iptablesUtils/master/deletePre.sh  &> /dev/null
 chmod +x deletePre.sh
 iptables -L PREROUTING -n -t nat |grep DNAT|grep dpt:$localport|awk '{print $8}'|tail -1|tr "\n" " "|xargs -d :  ./deletePre.sh
 rm -f deletePre.sh

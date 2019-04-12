@@ -24,6 +24,10 @@ localport=
 if [  "$localport"  =  "" ];then
     echo -n "local port:" ;read localport
 fi
+
+if [  "$remoteport"  =  "" ];then
+    echo -n "remote port:" ;read remoteport
+fi
 if [  "$remotehost"  =  "" ];then
     echo -n "target domain/ip:" ;read remotehost
 fi

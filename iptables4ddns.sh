@@ -1,5 +1,6 @@
 #! /bin/bash
 
+
 remotehost=example.com #中转目标host，自行修改
 localport=  #中转端口，自行修改
 remoteport=  #中转端口，自行修改
@@ -13,10 +14,10 @@ if [ $USER != "root" ];then
 fi
 
 if [ "$remotehost" = "example.com" ];then
-    echo "${red}请修改该脚本，设置remotehost，localport和remoteport${black}"
-    echo "${red}注意：remotehost=yourdomain.com 的等号两边不要有空格！${black}"
-    echo "${red}本脚本的功能是使用iptables中转ddns机器，所以推荐将该脚本加入crontab定时任务${black}"
-    echo "${red}运行该脚本，将检查remotehost指向的ip是否更改，如更改或者为第一次运行，则将设置新的转发${black}"
+    echo -e "${red}请修改该脚本，设置remotehost，localport和remoteport${black}"
+    echo -e "${red}注意：remotehost=yourdomain.com 的等号两边不要有空格！${black}"
+    echo -e "${red}本脚本的功能是使用iptables中转ddns机器，所以推荐将该脚本加入crontab定时任务${black}"
+    echo -e "${red}运行该脚本，将检查remotehost指向的ip是否更改，如更改或者为第一次运行，则将设置新的转发${black}"
     exit 1
 fi
 
@@ -68,9 +69,12 @@ fi
 echo  local-ip: $local
 echo  重新设置iptables转发
 
-#删除旧的中转规则
+#删除旧的中转规则iptables -t nat  -D POSTROUTING
+wget https://raw.githubusercontent.com/arloor/iptablesUtils/master/deletePre.sh
+chmod +x deletePre.sh
+iptables -L PREROUTING -n -t nat |grep DNAT|grep dpt:8888|awk '{print $8}'|tail -1|tr "\n" " "|xargs -d :  ./deletePre.sh
+rm -f deletePre.sh
 iptables -L PREROUTING -n -t nat --line-number|grep dpt:$localport|awk  '$1!=""{print $1}'|sort -r|xargs -n 1  iptables -t nat  -D PREROUTING
-iptables -L POSTROUTING -n -t nat --line-number|grep $remote|grep dpt:$remoteport|awk  '$1!=""{print $1}'|sort -r|xargs -n 1  iptables -t nat  -D POSTROUTING
 
 ## 建立新的中转规则
 iptables -t nat -A PREROUTING -p tcp --dport $localport -j DNAT --to-destination $remote:$remoteport

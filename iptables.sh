@@ -1,6 +1,6 @@
 #! /bin/bash
 
-# wget  http://arloor.com/iptables4domain.sh;bash iptables4domain.sh;rm -f iptables4domain.sh;
+# wget  https://raw.githubusercontent.com/arloor/iptablesUtils/master/iptables.sh;bash iptables.sh;rm -f iptables.sh;
 
 red="\033[31m"
 black="\033[0m"

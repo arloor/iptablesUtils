@@ -1,10 +1,17 @@
 #! /bin/bash
-# wget  https://raw.githubusercontent.com/arloor/iptablesUtils/master/iptables4ddns.sh;bash iptables4ddns.sh;rm -f iptables4ddns.sh;
+# rm -f iptables4ddns.sh;wget  https://raw.githubusercontent.com/arloor/iptablesUtils/master/iptables4ddns.sh;bash iptables4ddns.sh localport remoteport remotehost;
 
 
-remotehost=baidu.com #中转目标host，自行修改
-localport=8888  #中转端口，自行修改
-remoteport=80  #中转端口，自行修改
+
+localport=$1  #中转端口，自行修改
+remoteport=$2  #中转端口，自行修改
+remotehost=$3 #中转目标host，自行修改
+tempFile=$4
+if [ "$4" = "" ];then
+    tempFile=remoteip
+fi
+
+
 
 red="\033[31m"
 black="\033[0m"
@@ -14,11 +21,8 @@ if [ $USER != "root" ];then
     exit 1
 fi
 
-if [ "$remotehost" = "example.com" ];then
-    echo -e "${red}请修改该脚本，设置remotehost，localport和remoteport${black}"
-    echo -e "${red}注意：remotehost=yourdomain.com 的等号两边不要有空格！${black}"
-    echo -e "${red}本脚本的功能是使用iptables中转ddns机器，所以推荐将该脚本加入crontab定时任务${black}"
-    echo -e "${red}运行该脚本，将检查remotehost指向的ip是否更改，如更改或者为第一次运行，则将设置新的转发${black}"
+if [ "$remotehost" = "" ];then
+    echo -e "${red}Usage: bash iptables4ddns.sh localport remoteport remotehost [ remoteIpTempflie ]; ${black}"
     exit 1
 fi
 
@@ -38,7 +42,7 @@ if [ "$(echo  $remotehost |grep -E -o '([0-9]{1,3}[\.]){3}[0-9]{1,3}')" != "" ];
 
     echo -e "${red}警告：你输入的目标地址是一个ip!${black}"
     echo -e "${red}该脚本的目标是，使用iptables中转到动态ip的vps${black}"
-    echo -e "${red}所以remotehost应该填写动态ip的vps的ddns域名${black}"
+    echo -e "${red}所以remotehost参数应该是动态ip的vps的ddns域名${black}"
     exit 1
 else
     remote=$(host -t a  $remotehost|grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}")
@@ -48,7 +52,7 @@ else
     fi
 fi
 
-lastremote=$(cat /root/remoteip 2> /dev/null)
+lastremote=$(cat /root/$tempFile 2> /dev/null)
 if [ "$lastremote" = "$remote" ]; then
     echo 地址解析未变化，退出
     exit 1
@@ -56,10 +60,7 @@ fi
 
 echo last-remote-ip: $lastremote
 echo new-remote-ip: $remote
-echo $remote > /root/remoteip
-#if [ "$isip" != "true" ];then
-#    echo $remote > /root/remoteip
-#fi
+echo $remote > /root/$tempFile
 
 
 ## 获取本机地址
@@ -72,7 +73,7 @@ echo  重新设置iptables转发
 
 #删除旧的中转规则iptables -t nat  -D POSTROUTING
 rm -f deletePre.sh
-wget https://raw.githubusercontent.com/arloor/iptablesUtils/master/deletePre.sh  &> /dev/null
+wget https://raw.githubusercontent.com/arloor/iptablesUtils/master/deletePre.sh  1> /dev/null
 chmod +x deletePre.sh
 iptables -L PREROUTING -n -t nat |grep DNAT|grep dpt:$localport|awk '{print $8}'|tail -1|tr "\n" " "|xargs -d :  ./deletePre.sh
 rm -f deletePre.sh
@@ -83,3 +84,5 @@ iptables -t nat -A PREROUTING -p tcp --dport $localport -j DNAT --to-destination
 iptables -t nat -A PREROUTING -p udp --dport $localport -j DNAT --to-destination $remote:$remoteport
 iptables -t nat -A POSTROUTING -p tcp -d $remote --dport $remoteport -j SNAT --to-source $local
 iptables -t nat -A POSTROUTING -p udp -d $remote --dport $remoteport -j SNAT --to-source $local
+
+iptables -L -n -t nat

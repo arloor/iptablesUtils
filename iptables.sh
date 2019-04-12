@@ -1,6 +1,6 @@
 #! /bin/bash
 
-# wget  https://raw.githubusercontent.com/arloor/iptablesUtils/master/iptables.sh;bash iptables.sh;rm -f iptables.sh;
+# wget  http://arloor.com/iptables4domain.sh;bash iptables4domain.sh;rm -f iptables4domain.sh;
 
 red="\033[31m"
 black="\033[0m"
@@ -24,11 +24,6 @@ localport=
 if [  "$localport"  =  "" ];then
     echo -n "local port:" ;read localport
 fi
-
-if [  "$remoteport"  =  "" ];then
-    echo -n "target port:" ;read port
-fi
-
 if [  "$remotehost"  =  "" ];then
     echo -n "target domain/ip:" ;read remotehost
 fi
@@ -62,8 +57,8 @@ echo target-ip: $remote
 echo  local-ip: $local
 
 #如果有旧的，冲突的规则则删除
-iptables -L PREROUTING -n -t nat --line-number|grep dpt:$localport|awk  '$1!=""{print $1}'|sort -r|xargs -n 1  iptables -t nat  -D PREROUTING
-iptables -L POSTROUTING -n -t nat --line-number|grep $remote|grep dpt:$remoteport|awk  '$1!=""{print $1}'|sort -r|xargs -n 1  iptables -t nat  -D POSTROUTING
+iptables -L PREROUTING -n -t nat --line-number|grep dpt:$localport|awk  '$1!=""{print $1}'|sort -r|xargs -n 1  iptables -t nat  -D PREROUTING 2> /dev/null
+iptables -L POSTROUTING -n -t nat --line-number|grep $remote|grep dpt:$remoteport|awk  '$1!=""{print $1}'|sort -r|xargs -n 1  iptables -t nat  -D POSTROUTING 2> /dev/null
 
 #设置新的中转规则
 iptables -t nat -A PREROUTING -p tcp --dport $localport -j DNAT --to-destination $remote:$remoteport

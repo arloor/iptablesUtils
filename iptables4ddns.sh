@@ -70,6 +70,7 @@ echo  local-ip: $local
 echo  重新设置iptables转发
 
 #删除旧的中转规则iptables -t nat  -D POSTROUTING
+rm -f deletePre.sh
 wget https://raw.githubusercontent.com/arloor/iptablesUtils/master/deletePre.sh
 chmod +x deletePre.sh
 iptables -L PREROUTING -n -t nat |grep DNAT|grep dpt:8888|awk '{print $8}'|tail -1|tr "\n" " "|xargs -d :  ./deletePre.sh

@@ -21,13 +21,14 @@ rm -f iptables.sh;
 本脚本用途：
 设置本机tcp和udp端口转发
 原始iptables仅支持ip地址，该脚本增加域名支持（要求域名指向的主机ip不变）
-若要支持ddns，请使用 https://raw.githubusercontent.com/arloor/iptablesUtils/master/iptables4ddns.sh;
+若要支持ddns，请使用 https://raw.githubusercontent.com/arloor/iptablesUtils/master/setCroniptablesDDNS.sh;
 
 local port:8388
 remote port:1234
 target domain/ip:xxx.com
 target-ip: xx.xx.xx.xx
 local-ip: xx.xx.xx.xx
+done!
 ```
 
 # setCroniptablesDDNS.sh

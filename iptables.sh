@@ -61,9 +61,10 @@ echo target-ip: $remote
 echo  local-ip: $local
 
 #如果有旧的，冲突的规则则删除
-iptables -L PREROUTING -n -t nat --line-number|grep dpt:$localport|awk  '$1!=""{print $1}'|sort -r|xargs -n 1  iptables -t nat  -D PREROUTING
-iptables -L POSTROUTING -n -t nat --line-number|grep $remote|grep dpt:$remoteport|awk  '$1!=""{print $1}'|sort -r|xargs -n 1  iptables -t nat  -D POSTROUTING
-
+rm -f deletePre.sh
+wget https://raw.githubusercontent.com/arloor/iptablesUtils/master/rmPreNatRule.sh  1> /dev/null
+chmod +x rmPreNatRule.sh
+bash rmPreNatRule.sh $localport
 #设置新的中转规则
 iptables -t nat -A PREROUTING -p tcp --dport $localport -j DNAT --to-destination $remote:$remoteport
 iptables -t nat -A PREROUTING -p udp --dport $localport -j DNAT --to-destination $remote:$remoteport

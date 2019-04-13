@@ -1,5 +1,5 @@
 #! /bin/bash
-# rm -f iptables4ddns.sh;wget  https://raw.githubusercontent.com/arloor/iptablesUtils/master/iptables4ddns.sh;bash iptables4ddns.sh localport remoteport remotehost;
+# rm -f iptables4ddns.sh;wget  https://raw.githubusercontent.com/arloor/iptablesUtils/master/iptables4ddns.sh;bash iptables4ddns.sh $localport $remoteport $remotehost [ $remoteIpTempfile——暂存ddns的目标ip,用于定时任务判断时候需要更新iptables转发 ];
 
 
 
@@ -71,13 +71,12 @@ fi
 echo  local-ip: $local
 echo  重新设置iptables转发
 
-#删除旧的中转规则iptables -t nat  -D POSTROUTING
+#删除旧的中转规则
 rm -f deletePre.sh
-wget https://raw.githubusercontent.com/arloor/iptablesUtils/master/deletePre.sh  1> /dev/null
-chmod +x deletePre.sh
-iptables -L PREROUTING -n -t nat |grep DNAT|grep dpt:$localport|awk '{print $8}'|tail -1|tr "\n" " "|xargs -d :  ./deletePre.sh
-rm -f deletePre.sh
-iptables -L PREROUTING -n -t nat --line-number|grep dpt:$localport|awk  '$1!=""{print $1}'|sort -r|xargs -n 1  iptables -t nat  -D PREROUTING
+wget https://raw.githubusercontent.com/arloor/iptablesUtils/master/rmPreNatRule.sh  1> /dev/null
+chmod +x rmPreNatRule.sh
+bash rmPreNatRule.sh $localport
+
 
 ## 建立新的中转规则
 iptables -t nat -A PREROUTING -p tcp --dport $localport -j DNAT --to-destination $remote:$remoteport
@@ -85,4 +84,6 @@ iptables -t nat -A PREROUTING -p udp --dport $localport -j DNAT --to-destination
 iptables -t nat -A POSTROUTING -p tcp -d $remote --dport $remoteport -j SNAT --to-source $local
 iptables -t nat -A POSTROUTING -p udp -d $remote --dport $remoteport -j SNAT --to-source $local
 
-iptables -L -n -t nat
+iptables -L PREROUTING -n -t nat
+echo ""
+iptables -L POSTROUTING -n -t nat

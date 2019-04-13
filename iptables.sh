@@ -9,7 +9,7 @@ if [ $USER = "root" ];then
 	echo "本脚本用途："
     echo "设置本机tcp和udp端口转发"
     echo  "原始iptables仅支持ip地址，该脚本增加域名支持（要求域名指向的主机ip不变）"
-    echo "若要支持ddns，请使用 http://arloor.com/iptables.sh"
+    echo "若要支持ddns，请使用 https://raw.githubusercontent.com/arloor/iptablesUtils/master/iptables4ddns.sh;"
     echo
 else
     echo   -e "${red}请使用root用户执行本脚本!! ${black}"
@@ -71,3 +71,8 @@ iptables -t nat -A PREROUTING -p udp --dport $localport -j DNAT --to-destination
 iptables -t nat -A POSTROUTING -p tcp -d $remote --dport $remoteport -j SNAT --to-source $local
 iptables -t nat -A POSTROUTING -p udp -d $remote --dport $remoteport -j SNAT --to-source $local
 echo 端口转发成功
+
+
+iptables -L PREROUTING -n -t nat
+echo ""
+iptables -L POSTROUTING -n -t nat

@@ -2,7 +2,8 @@
 
 # wget https://raw.githubusercontent.com/arloor/iptablesUtils/master/setCroniptablesDDNS.sh;bash setCroniptablesDDNS.sh
 
-sudo su
+
+cd
 yum install -y wget
 cd /usr/local
 rm -f /usr/local/iptables4ddns.sh
@@ -10,7 +11,7 @@ wget https://raw.githubusercontent.com/arloor/iptablesUtils/master/iptables4ddns
 chmod +x /usr/local/iptables4ddns.sh
 
 echo -n "local port:" ;read localport
-echo -n "local port:" ;read remoteport
+echo -n "remote port:" ;read remoteport
 echo -n "targetDDNS:" ;read targetDDNS
 # 开机强制刷新一次
 echo "rm -f /root/remoteip" >> /etc/rc.d/rc.local

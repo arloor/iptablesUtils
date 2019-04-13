@@ -36,6 +36,13 @@ local-ip: xx.xx.xx.xx
 rm -f setCroniptablesDDNS.sh
 wget https://raw.githubusercontent.com/arloor/iptablesUtils/master/setCroniptablesDDNS.sh;
 bash setCroniptablesDDNS.sh
+
+
+#local port:80
+#remote port:58000
+#targetDDNS:xxxx.example.com
+#done!
+#现在每分钟都会检查ddns的ip是否改变，并自动更新
 ```
 
 # rmPreNatRule.sh

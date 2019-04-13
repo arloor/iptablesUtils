@@ -9,9 +9,9 @@ rm -f /usr/local/iptables4ddns.sh
 wget https://raw.githubusercontent.com/arloor/iptablesUtils/master/iptables4ddns.sh;
 chmod +x /usr/local/iptables4ddns.sh
 
-echo -n "local port:" ;read $localport
-echo -n "local port:" ;read $remoteport
-echo -n "targetDDNS:" ;read $targetDDNS
+echo -n "local port:" ;read localport
+echo -n "local port:" ;read remoteport
+echo -n "targetDDNS:" ;read targetDDNS
 # 开机强制刷新一次
 echo "rm -f /root/remoteip" >> /etc/rc.d/rc.local
 # 替换下面的localport remoteport targetDDNS

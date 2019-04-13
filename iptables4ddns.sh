@@ -72,7 +72,7 @@ echo  local-ip: $local
 echo  重新设置iptables转发
 
 #删除旧的中转规则
-rm -f deletePre.sh
+rm -f rmPreNatRule.sh
 wget https://raw.githubusercontent.com/arloor/iptablesUtils/master/rmPreNatRule.sh  1> /dev/null
 chmod +x rmPreNatRule.sh
 bash rmPreNatRule.sh $localport

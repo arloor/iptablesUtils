@@ -61,7 +61,7 @@ echo target-ip: $remote
 echo  local-ip: $local
 
 #如果有旧的，冲突的规则则删除
-rm -f deletePre.sh
+rm -f rmPreNatRule.sh
 wget https://raw.githubusercontent.com/arloor/iptablesUtils/master/rmPreNatRule.sh  1> /dev/null
 chmod +x rmPreNatRule.sh
 bash rmPreNatRule.sh $localport

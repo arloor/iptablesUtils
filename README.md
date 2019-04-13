@@ -16,6 +16,43 @@ bash iptables.sh;
 rm -f iptables.sh;
 ```
 
+输出如下：
 ```shell
+本脚本用途：
+设置本机tcp和udp端口转发
+原始iptables仅支持ip地址，该脚本增加域名支持（要求域名指向的主机ip不变）
+若要支持ddns，请使用 https://raw.githubusercontent.com/arloor/iptablesUtils/master/iptables4ddns.sh;
 
+local port:8388
+remote port:1234
+target domain/ip:xxx.com
+target-ip: xx.xx.xx.xx
+local-ip: xx.xx.xx.xx
+```
+
+# iptables4ddns.sh
+
+```shell
+sudo su
+yum install -y wget
+cd /usr/local
+rm -f /usr/local/iptables4ddns.sh
+wget https://raw.githubusercontent.com/arloor/iptablesUtils/master/iptables4ddns.sh;
+chmod +x /usr/local/iptables4ddns.sh
+# 开机强制刷新一次
+echo "rm -f /root/remoteip" >> /etc/rc.d/rc.local
+# 替换下面的localport remoteport targetDDNS
+echo "/bin/bash /usr/local/iptables4ddns.sh $localport $remoteport $targetDDNS &>> /root/iptables.log" >> /etc/rc.d/rc.local
+chmod +x /etc/rc.d/rc.local
+# 定时任务，每分钟检查一下
+echo "* * * * * root /usr/local/iptables4ddns.sh localport remoteport remoteDDNS &>> /root/iptables.log" >> /etc/crontab
+cd 
+```
+
+# rmPreNatRule.sh
+
+```shell
+rm -f rmPreNatRule.sh
+wget https://raw.githubusercontent.com/arloor/iptablesUtils/master/rmPreNatRule.sh;
+bash rmPreNatRule.sh $localport
 ```

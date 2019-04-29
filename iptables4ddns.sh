@@ -72,10 +72,23 @@ echo  local-ip: $local
 echo  重新设置iptables转发
 
 #删除旧的中转规则
-rm -f rmPreNatRule.sh
-wget https://raw.githubusercontent.com/arloor/iptablesUtils/master/rmPreNatRule.sh  1> /dev/null
-chmod +x rmPreNatRule.sh
-bash rmPreNatRule.sh $localport
+arr1=(`iptables -L PREROUTING -n -t nat --line-number |grep DNAT|grep "dpt:$localport "|sort -r|awk '{print $1,$3,$9}'|tr " " ":"|tr "\n" " "`)
+for cell in ${arr1[@]}  # cell= 1:tcp:to:8.8.8.8:543
+do
+        arr2=(`echo $cell|tr ":" " "`)  #arr2=(1 tcp to 8.8.8.8 543)
+        index=${arr2[0]}
+        proto=${arr2[1]}
+        targetIP=${arr2[3]}
+        targetPort=${arr2[4]}
+        echo 清除本机$localport端口到$targetIP:$targetPort的${proto}PREROUTING转发规则$index
+        iptables -t nat  -D PREROUTING $index
+        echo 清除对应的POSTROUTING规则
+        toRmIndexs=(`iptables -L POSTROUTING -n -t nat --line-number|grep $targetIP|grep $targetPort|grep $proto|awk  '{print $1}'|sort -r|tr "\n" " "`)
+        for cell1 in ${toRmIndexs[@]} 
+        do
+            iptables -t nat  -D POSTROUTING $cell1
+        done
+done
 
 
 ## 建立新的中转规则
@@ -84,6 +97,3 @@ iptables -t nat -A PREROUTING -p udp --dport $localport -j DNAT --to-destination
 iptables -t nat -A POSTROUTING -p tcp -d $remote --dport $remoteport -j SNAT --to-source $local
 iptables -t nat -A POSTROUTING -p udp -d $remote --dport $remoteport -j SNAT --to-source $local
 
-iptables -L PREROUTING -n -t nat
-echo ""
-iptables -L POSTROUTING -n -t nat

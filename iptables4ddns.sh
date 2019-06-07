@@ -52,6 +52,17 @@ else
     fi
 fi
 
+#开放FORWARD链
+arr1=(`iptables -L FORWARD -n  --line-number |grep "REJECT"|grep "0.0.0.0/0"|sort -r|awk '{print $1,$2,$5}'|tr " " ":"|tr "\n" " "`)  #16:REJECT:0.0.0.0/0 15:REJECT:0.0.0.0/0
+for cell in ${arr1[@]}
+do
+    arr2=(`echo $cell|tr ":" " "`)  #arr2=16 REJECT 0.0.0.0/0
+    index=${arr2[0]}
+    echo 删除禁止FOWARD的规则——$index
+    iptables -D FORWARD $index
+done
+iptables --policy FORWARD ACCEPT
+
 lastremote=$(cat /root/$tempFile 2> /dev/null)
 if [ "$lastremote" = "$remote" ]; then
     echo 地址解析未变化，退出

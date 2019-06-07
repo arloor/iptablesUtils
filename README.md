@@ -54,9 +54,9 @@ bash setCroniptablesDDNS.sh
 适用于debain系
 
 ```
-rm -f setCroniptablesDDNS.sh
-wget https://raw.githubusercontent.com/arloor/iptablesUtils/master/setCroniptablesDDNS.sh;
-bash setCroniptablesDDNS.sh
+rm -f setCroniptablesDDNS-debian.sh
+wget https://raw.githubusercontent.com/arloor/iptablesUtils/master/setCroniptablesDDNS-debian.sh;
+bash setCroniptablesDDNS-debian.sh
 ```
 
 # rmPreNatRule.sh

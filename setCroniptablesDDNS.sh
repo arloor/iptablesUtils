@@ -24,15 +24,18 @@ chmod +x /usr/local/iptables4ddns.sh
 echo -n "local port:" ;read localport
 echo -n "remote port:" ;read remoteport
 echo -n "targetDDNS:" ;read targetDDNS
+
+IPrecordfile=${localport}[${targetDDNS}:${remoteport}]
 # 开机强制刷新一次
 chmod +x /etc/rc.d/rc.local
-echo "rm -f /root/remoteip" >> /etc/rc.d/rc.local
+echo "rm -f /root/$IPrecordfile" >> /etc/rc.d/rc.local
 # 替换下面的localport remoteport targetDDNS
-echo "/bin/bash /usr/local/iptables4ddns.sh $localport $remoteport $targetDDNS ${localport}[${targetDDNS}:${remoteport}] &>> /root/iptables.log" >> /etc/rc.d/rc.local
+echo "/bin/bash /usr/local/iptables4ddns.sh $localport $remoteport $targetDDNS $IPrecordfile &>> /root/iptables.log" >> /etc/rc.d/rc.local
 chmod +x /etc/rc.d/rc.local
 # 定时任务，每分钟检查一下
-echo "* * * * * root /usr/local/iptables4ddns.sh $localport $remoteport $targetDDNS ${localport}[${targetDDNS}:${remoteport}] &>> /root/iptables.log" >> /etc/crontab
+echo "* * * * * root /usr/local/iptables4ddns.sh $localport $remoteport $targetDDNS $IPrecordfile &>> /root/iptables.log" >> /etc/crontab
 cd
-bash /usr/local/iptables4ddns.sh $localport $remoteport $targetDDNS &>> /root/iptables.log
+rm -f /root/$IPrecordfile
+bash /usr/local/iptables4ddns.sh $localport $remoteport $targetDDNS $IPrecordfile &>> /root/iptables.log
 echo "done!"
 echo "现在每分钟都会检查ddns的ip是否改变，并自动更新"

@@ -25,6 +25,14 @@ echo -n "local port:" ;read localport
 echo -n "remote port:" ;read remoteport
 echo -n "targetDDNS:" ;read targetDDNS
 
+# 判断端口是否为数字
+echo "$localport"|[ -n "`sed -n '/^[0-9][0-9]*$/p'`" ] && echo $remoteport |[ -n "`sed -n '/^[0-9][0-9]*$/p'`" ]&& valid=true
+
+if [ "$valid" = "" ];then
+   echo  -e "${red}本地端口和目标端口请输入数字！！${black}"
+   exit 1;
+fi
+
 IPrecordfile=${localport}[${targetDDNS}:${remoteport}]
 # 开机强制刷新一次
 chmod +x /etc/rc.local

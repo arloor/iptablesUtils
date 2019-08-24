@@ -15,15 +15,20 @@ else
 fi
 
 cd
-yum install -y wget bind-utils
+
+echo "正在安装依赖...."
+yum install -y wget bind-utils &> /dev/null
 cd /usr/local
 rm -f /usr/local/iptables4ddns.sh
-wget https://raw.githubusercontent.com/arloor/iptablesUtils/master/iptables4ddns.sh;
+wget https://raw.githubusercontent.com/arloor/iptablesUtils/master/iptables4ddns.sh  &> /dev/null
 chmod +x /usr/local/iptables4ddns.sh
+echo "Done!"
+echo ""
 
-echo -n "local port:" ;read localport
-echo -n "remote port:" ;read remoteport
-echo -n "targetDDNS:" ;read targetDDNS
+
+echo -n "本地端口号:" ;read localport
+echo -n "远程端口号:" ;read remoteport
+echo -n "目标DDNS:" ;read targetDDNS
 
 # 判断端口是否为数字
 echo "$localport"|[ -n "`sed -n '/^[0-9][0-9]*$/p'`" ] && echo $remoteport |[ -n "`sed -n '/^[0-9][0-9]*$/p'`" ]&& valid=true
@@ -38,12 +43,12 @@ IPrecordfile=${localport}[${targetDDNS}:${remoteport}]
 chmod +x /etc/rc.d/rc.local
 echo "rm -f /root/$IPrecordfile" >> /etc/rc.d/rc.local
 # 替换下面的localport remoteport targetDDNS
-echo "/bin/bash /usr/local/iptables4ddns.sh $localport $remoteport $targetDDNS $IPrecordfile &>> /root/iptables.log" >> /etc/rc.d/rc.local
+echo "/bin/bash /usr/local/iptables4ddns.sh $localport $remoteport $targetDDNS $IPrecordfile &>> /root/iptables${localport}.log" >> /etc/rc.d/rc.local
 chmod +x /etc/rc.d/rc.local
 # 定时任务，每分钟检查一下
-echo "* * * * * root /usr/local/iptables4ddns.sh $localport $remoteport $targetDDNS $IPrecordfile &>> /root/iptables.log" >> /etc/crontab
+echo "* * * * * root /usr/local/iptables4ddns.sh $localport $remoteport $targetDDNS $IPrecordfile &>> /root/iptables${localport}.log" >> /etc/crontab
 cd
 rm -f /root/$IPrecordfile
-bash /usr/local/iptables4ddns.sh $localport $remoteport $targetDDNS $IPrecordfile &>> /root/iptables.log
+bash /usr/local/iptables4ddns.sh $localport $remoteport $targetDDNS $IPrecordfile &>> /root/iptables${localport}.log
 echo "done!"
 echo "现在每分钟都会检查ddns的ip是否改变，并自动更新"

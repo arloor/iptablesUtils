@@ -35,9 +35,7 @@ done!
 适用于centos系
 
 ```shell
-rm -f setCroniptablesDDNS.sh
-wget https://raw.githubusercontent.com/arloor/iptablesUtils/master/setCroniptablesDDNS.sh;
-bash setCroniptablesDDNS.sh
+wget -O setCroniptablesDDNS.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/setCroniptablesDDNS.sh;bash setCroniptablesDDNS.sh
 
 
 #local port:80
@@ -52,15 +50,11 @@ bash setCroniptablesDDNS.sh
 适用于debain系
 
 ```
-rm -f setCroniptablesDDNS-debian.sh
-wget https://raw.githubusercontent.com/arloor/iptablesUtils/master/setCroniptablesDDNS-debian.sh;
-bash setCroniptablesDDNS-debian.sh
+wget -O setCroniptablesDDNS-debian.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/setCroniptablesDDNS-debian.sh;bash setCroniptablesDDNS-debian.sh
 ```
 
 # rmPreNatRule.sh
 
 ```shell
-rm -f rmPreNatRule.sh
-wget https://raw.githubusercontent.com/arloor/iptablesUtils/master/rmPreNatRule.sh;
-bash rmPreNatRule.sh $localport
+wget -O rmPreNatRule.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/rmPreNatRule.sh;bash rmPreNatRule.sh $localport
 ```

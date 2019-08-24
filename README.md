@@ -1,11 +1,16 @@
-# 一些关于iptables转发的工具
+# 利用iptables设置端口转发的shell脚本
 
-socat、haproxy好像是最方便的端口转发工具，但是我喜欢iptables，写了几个脚本，适用于以下需求
+很多玩VPS的人都会有设置端口转发、进行中转的需求，在这方面也有若干种方案，比如socat、haproxy、brook等等。
 
-- iptables.sh:中转的目标地址可以使用。原来的iptables不支持域名，这个脚本增加域名支持，但不支持ddns域名。适用于所有linux发行版
-- setCroniptablesDDNS.sh: 适用于中转目标地址为ddns域名。这个脚本会设置crontab定时任务，每分钟执行一次，检测ddns的ip是否改变，如改变则更新端口映射。适用于centos7
-- setCroniptablesDDNS-debian.sh 对上面的脚本做修改，适用于debian系  来自[Catboy96](https://github.com/Catboy96)
-- rmPreNatRule.sh: 删除本机上对应端口的中转规则，会同时删除PREROUTING和POSTROUTING链的相关规则。
+我比较喜欢iptables。iptables利用linux的一个内核模块进行ip包的转发，工作在linux的内核态，不涉及内核态和用户态的状态转换，因此可以说是所有端口转发方案中性能最好、最稳定的。但他的缺点也显而易见：只支持IP、需要输入一大堆参数。本项目就是为了解决这些缺点，让大家能方便快速地使用最快、最稳定的端口转发方案。
+
+|脚本|功能|优势|限制|
+|---   |--|--|---|
+|iptables.sh|1. 快速方便地设置本机到目标域名/IP的iptables转发<br><br>2. 仅需输入本地端口号、目标端口号、目标域名/IP即可|1. 原生iptables仅支持ip，该脚本支持域名并<br><br>2. 另外，仅需要用户输入三个参数，避免了复杂地手动调用过程|不能处理ddns(域名解析地ip地址会改变的情况)。<br><br>处理ddns请使用下面两栏介绍的脚本|
+|setCroniptablesDDNS.sh|设置到ddns域名的动态转发规则|能正确处理目标域名对应的IP会变的情况(ddns)|只适用于centos系统|
+|setCroniptablesDDNS-debian.sh|同上|同上|只适用于debain系统|
+|rmPreNatRule.sh|删除本机某端口上的iptables转发规则|仅需要输入端口号即可|无|
+
 
 # 用法
 

@@ -43,8 +43,10 @@ done!
 
 ```shell
 wget -O setCroniptablesDDNS.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/setCroniptablesDDNS.sh;bash setCroniptablesDDNS.sh
+```
 
-
+```
+输出如下：
 #local port:80
 #remote port:58000
 #targetDDNS:xxxx.example.com

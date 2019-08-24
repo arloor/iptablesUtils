@@ -28,10 +28,10 @@ echo -n "targetDDNS:" ;read targetDDNS
 chmod +x /etc/rc.local
 echo "rm -f /root/remoteip" >> /etc/rc.local
 # 替换下面的localport remoteport targetDDNS
-echo "/bin/bash /usr/local/iptables4ddns.sh $localport $remoteport $targetDDNS &>> /root/iptables.log" >> /etc/rc.local
+echo "/bin/bash /usr/local/iptables4ddns.sh $localport $remoteport $targetDDNS ${localport}[${targetDDNS}:${remoteport}] &>> /root/iptables.log" >> /etc/rc.local
 chmod +x /etc/rc.local
 # 定时任务，每分钟检查一下
-echo "* * * * * root /usr/local/iptables4ddns.sh $localport $remoteport $targetDDNS &>> /root/iptables.log" >> /etc/crontab
+echo "* * * * * root /usr/local/iptables4ddns.sh $localport $remoteport $targetDDNS ${localport}[${targetDDNS}:${remoteport}] &>> /root/iptables.log" >> /etc/crontab
 cd
 bash /usr/local/iptables4ddns.sh $localport $remoteport $targetDDNS &>> /root/iptables.log
 echo "done!"

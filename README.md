@@ -12,9 +12,7 @@ socat、haproxy好像是最方便的端口转发工具，但是我喜欢iptables
 # iptables.sh
 
 ```shell
-rm -f iptables.sh;
-wget  https://raw.githubusercontent.com/arloor/iptablesUtils/master/iptables.sh;
-bash iptables.sh;
+wget -O iptables.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/iptables.sh;bash iptables.sh;
 ```
 
 输出如下：

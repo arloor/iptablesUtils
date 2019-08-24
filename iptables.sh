@@ -6,9 +6,9 @@ red="\033[31m"
 black="\033[0m"
 
 if [ $USER = "root" ];then
-	echo "本脚本用途："
+    echo "本脚本用途："
     echo "设置本机tcp和udp端口转发"
-    echo  "原始iptables仅支持ip地址，该脚本增加域名支持（要求域名指向的主机ip不变），如果是centos系统请先执行：yum install bind-utils"
+    echo  "原始iptables仅支持ip地址，该脚本增加域名支持（要求域名指向的主机ip不变）"
     echo "若要支持ddns，请使用 https://raw.githubusercontent.com/arloor/iptablesUtils/master/iptables4ddns.sh;"
     echo
 else

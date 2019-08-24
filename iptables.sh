@@ -36,6 +36,8 @@ if [ "$(echo  $remotehost |grep -E -o '([0-9]{1,3}[\.]){3}[0-9]{1,3}')" != "" ];
     isip=true
     remote=$remotehost
 else
+    yum install -y wget bind-utils &> /dev/null  #为centos系列安装依赖
+    apt install -y wget dnsutils  &> /dev/null   #为debain系列安装依赖
     remote=$(host -t a  $remotehost|grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}")
 fi
 if [ "$remote" = "" ];then

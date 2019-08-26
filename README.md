@@ -10,7 +10,7 @@
 |---   |--|--|---|
 |iptables.sh|1. 快速方便地设置本机到目标域名/IP的iptables转发<br><br>2. 仅需输入本地端口号、目标端口号、目标域名/IP即可|1. 原生iptables仅支持ip，该脚本支持域名并<br><br>2. 另外，仅需要用户输入三个参数，避免了复杂地手动调用过程|不能处理ddns(域名解析地ip地址会改变的情况)。<br><br>处理ddns请使用下面两栏介绍的脚本|
 |setCroniptablesDDNS.sh|设置到ddns域名的动态转发规则|能正确处理目标域名对应的IP会变的情况(ddns)|只适用于centos系统|
-|setCroniptablesDDNS-debian.sh|同上|同上|只适用于debain系统|
+|setCroniptablesDDNS-debian.sh|同上|同上|只适用于debain系统<br><br>已知bug，开机不能自启动|
 |rmPreNatRule.sh|删除本机某端口上的iptables转发规则|仅需要输入端口号即可|无|
 
 

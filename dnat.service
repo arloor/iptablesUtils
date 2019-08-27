@@ -1,0 +1,12 @@
+[Unit]
+Description=动态设置iptables转发规则
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+WorkingDirectory=/root/
+EnvironmentFile=/etc/dnat/dnat.conf
+ExecStart=/bin/bash /usr/local/dnat.sh $localport $remoteport $remotehost >> /var/log/dnat.log
+
+[Install]
+WantedBy=multi-user.target

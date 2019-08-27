@@ -67,3 +67,13 @@ wget -O setCroniptablesDDNS-debian.sh https://raw.githubusercontent.com/arloor/i
 ```shell
 wget -O rmPreNatRule.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/rmPreNatRule.sh;bash rmPreNatRule.sh $localport
 ```
+
+# 正在进行的一项实验：
+
+这个最方便
+
+```
+wget -O dnat.sh wget https://raw.githubusercontent.com/arloor/iptablesUtils/master/dnat.sh
+bash dnat.sh 80 80 arloor.com &
+# 本地80 转发到arloor.com:80
+```

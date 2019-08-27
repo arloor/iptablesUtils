@@ -77,3 +77,31 @@ wget -O dnat.sh wget https://raw.githubusercontent.com/arloor/iptablesUtils/mast
 bash dnat.sh 80 80 arloor.com &
 # 本地80 转发到arloor.com:80
 ```
+
+输出如下：
+```
+正在安装依赖....
+Completed：依赖安装完毕
+
+1.端口转发开启  【成功】
+2.开放iptbales中的FORWARD链  【成功】
+3.本机网卡IP——38.121.20.13
+4.开启动态转发！
+
+【Tue Aug 27 12:00:07 EDT 2019】 发现目标域名的IP变为[39.108.0.48]，更新NAT表！
+当前NAT表如下：(仅供专业人士debug用)
+###########################################################
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination
+DOCKER     all  --  0.0.0.0/0            0.0.0.0/0            ADDRTYPE match dst-type LOCAL
+DNAT       tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:80 to:39.108.0.48:80
+DNAT       udp  --  0.0.0.0/0            0.0.0.0/0            udp dpt:80 to:39.108.0.48:80
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination
+MASQUERADE  all  --  172.17.0.0/16        0.0.0.0/0
+MASQUERADE  tcp  --  172.17.0.2           172.17.0.2           tcp dpt:8080
+SNAT       tcp  --  0.0.0.0/0            39.108.0.48          tcp dpt:80 to:38.121.20.13
+SNAT       udp  --  0.0.0.0/0            39.108.0.48          udp dpt:80 to:38.121.20.13
+###########################################################
+....
+```

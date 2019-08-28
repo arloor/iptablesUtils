@@ -32,6 +32,13 @@ if [  "$remotehost"  =  "" ];then
     echo -n "target domain/ip:" ;read remotehost
 fi
 
+# 判断端口是否为数字
+echo "$localport"|[ -n "`sed -n '/^[0-9][0-9]*$/p'`" ] && echo $remoteport |[ -n "`sed -n '/^[0-9][0-9]*$/p'`" ]&& valid=true
+if [ "$valid" = "" ];then
+   echo  -e "${red}本地端口和目标端口请输入数字！！${black}"
+   exit 1;
+fi
+
 if [ "$(echo  $remotehost |grep -E -o '([0-9]{1,3}[\.]){3}[0-9]{1,3}')" != "" ];then
     isip=true
     remote=$remotehost

@@ -9,8 +9,7 @@
 |脚本|功能|优势|限制|
 |---   |--|--|---|
 |iptables.sh|1. 快速方便地设置本机到目标域名/IP的iptables转发<br><br>2. 仅需输入本地端口号、目标端口号、目标域名/IP即可|1. 原生iptables仅支持ip，该脚本支持域名并<br><br>2. 另外，仅需要用户输入三个参数，避免了复杂地手动调用过程|不能处理ddns(域名解析地ip地址会改变的情况)。<br><br>处理ddns请使用下面两栏介绍的脚本|
-|setCroniptablesDDNS.sh|设置到ddns域名的动态转发规则|能正确处理目标域名对应的IP会变的情况(ddns)|只适用于centos系统|
-|setCroniptablesDDNS-debian.sh|同上|同上|只适用于debain系统<br><br>已知bug，开机不能自启动|
+|dnat-install.sh|设置到ddns域名的动态转发规则|能正确处理目标域名对应的IP会变的情况(ddns)|尚未发现问题，如有问题请发issue|
 |rmPreNatRule.sh|删除本机某端口上的iptables转发规则|仅需要输入端口号即可|无|
 
 
@@ -37,70 +36,40 @@ local-ip: xx.xx.xx.xx
 done!
 ```
 
-# setCroniptablesDDNS.sh
+# dnat-install.sh
+```
+wget -O dnat-install.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/dnat-install.sh
+bash dnat-install.sh
+```
 
-适用于centos系
+按照要求输入三个参数：本地端口号、远程端口号、远程ddns域名即可。该脚本默认开机自启动。
 
+可以使用`journalctl -exu dnat`查看日志，日志形式如下：
 ```shell
-wget -O setCroniptablesDDNS.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/setCroniptablesDDNS.sh;bash setCroniptablesDDNS.sh
-```
-
-```
-输出如下：
-#local port:80
-#remote port:58000
-#targetDDNS:xxxx.example.com
-#done!
-#现在每分钟都会检查ddns的ip是否改变，并自动更新
-```
-
-# setCroniptablesDDNS-debian.sh
-
-适用于debain系
-
-```
-wget -O setCroniptablesDDNS-debian.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/setCroniptablesDDNS-debian.sh;bash setCroniptablesDDNS-debian.sh
+8月 28 20:53:41 cn2 bash[17546]: 转发规则：本地端口[80]=>[github.com:80]
+8月 28 20:53:41 cn2 bash[17546]: 正在安装依赖....
+8月 28 20:53:42 cn2 bash[17546]: Completed：依赖安装完毕
+8月 28 20:53:42 cn2 bash[17546]: 1.端口转发开启  【成功】
+8月 28 20:53:42 cn2 bash[17546]: 2.开放iptbales中的FORWARD链  【成功】
+8月 28 20:53:42 cn2 bash[17546]: 3.本机网卡IP——172.16.20.24
+8月 28 20:53:42 cn2 bash[17546]: 4.开启动态转发！
+8月 28 20:53:42 cn2 bash[17546]: 【2019年 08月 28日 星期三 20:53:42 CST】 发现目标域名的IP变为[52.74.223.119]，更新NAT表！
+8月 28 20:53:42 cn2 bash[17546]: 当前NAT表如下：(仅供专业人士debug用)
+8月 28 20:53:42 cn2 bash[17546]: ###########################################################
+8月 28 20:53:42 cn2 bash[17546]: Chain PREROUTING (policy ACCEPT)
+8月 28 20:53:42 cn2 bash[17546]: target     prot opt source               destination
+8月 28 20:53:42 cn2 bash[17546]: DNAT       tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:80 to:52.74.223.119:80
+8月 28 20:53:42 cn2 bash[17546]: DNAT       udp  --  0.0.0.0/0            0.0.0.0/0            udp dpt:80 to:52.74.223.119:80
+8月 28 20:53:42 cn2 bash[17546]: Chain POSTROUTING (policy ACCEPT)
+8月 28 20:53:42 cn2 bash[17546]: target     prot opt source               destination
+8月 28 20:53:42 cn2 bash[17546]: SNAT       tcp  --  0.0.0.0/0            52.74.223.119        tcp dpt:80 to:172.16.20.24
+8月 28 20:53:42 cn2 bash[17546]: SNAT       udp  --  0.0.0.0/0            52.74.223.119        udp dpt:80 to:172.16.20.24
+8月 28 20:53:42 cn2 bash[17546]: ###########################################################
+....
 ```
 
 # rmPreNatRule.sh
 
 ```shell
 wget -O rmPreNatRule.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/rmPreNatRule.sh;bash rmPreNatRule.sh $localport
-```
-
-# 正在进行的一项实验：
-
-这个最方便
-
-```
-wget -O dnat-install.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/dnat-install.sh
-bash dnat-install.sh
-```
-
-输出如下：
-```
-正在安装依赖....
-Completed：依赖安装完毕
-
-1.端口转发开启  【成功】
-2.开放iptbales中的FORWARD链  【成功】
-3.本机网卡IP——38.121.20.13
-4.开启动态转发！
-
-【Tue Aug 27 12:00:07 EDT 2019】 发现目标域名的IP变为[39.108.0.48]，更新NAT表！
-当前NAT表如下：(仅供专业人士debug用)
-###########################################################
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source               destination
-DOCKER     all  --  0.0.0.0/0            0.0.0.0/0            ADDRTYPE match dst-type LOCAL
-DNAT       tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:80 to:39.108.0.48:80
-DNAT       udp  --  0.0.0.0/0            0.0.0.0/0            udp dpt:80 to:39.108.0.48:80
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination
-MASQUERADE  all  --  172.17.0.0/16        0.0.0.0/0
-MASQUERADE  tcp  --  172.17.0.2           172.17.0.2           tcp dpt:8080
-SNAT       tcp  --  0.0.0.0/0            39.108.0.48          tcp dpt:80 to:38.121.20.13
-SNAT       udp  --  0.0.0.0/0            39.108.0.48          udp dpt:80 to:38.121.20.13
-###########################################################
-....
 ```

@@ -1,13 +1,54 @@
 #! /bin/bash
-localport=$1  #中转端口，自行修改
-remoteport=$2  #中转端口，自行修改
-remotehost=$3 #中转目标host，自行修改
+echo -n "本地端口号:" ;read localport
+echo -n "远程端口号:" ;read remoteport
+echo -n "目标DDNS:" ;read remotehost
+
 red="\033[31m"
 black="\033[0m"
 
+# 判断端口是否为数字
+echo "$localport"|[ -n "`sed -n '/^[0-9][0-9]*$/p'`" ] && echo $remoteport |[ -n "`sed -n '/^[0-9][0-9]*$/p'`" ]&& valid=true
+if [ "$valid" = "" ];then
+   echo  -e "${red}本地端口和目标端口请输入数字！！${black}"
+   exit 1;
+fi
+
+
+# 检查输入的不是IP
+if [ "$(echo  $remotehost |grep -E -o '([0-9]{1,3}[\.]){3}[0-9]{1,3}')" != "" ];then
+    isip=true
+    remote=$remotehost
+
+    echo -e "${red}警告：你输入的目标地址是一个ip!${black}"
+    echo -e "${red}该脚本的目标是，使用iptables中转到动态ip的vps${black}"
+    echo -e "${red}所以remotehost参数应该是动态ip的vps的ddns域名${black}"
+    exit 1
+fi
+
+mkdir /etc/dnat
+cat > /etc/dnat/dnat.conf <<EOF
+#本地端口号
+localport=$localport
+#远程端口号
+remoteport=$remoteport
+#远程域名
+remotehost=$remotehost
+USER=root
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/sbin:/bin
+EOF
+
+cat > /usr/local/bin/dnat.sh <<\EOF
+#! /bin/bash
+localport=$1  
+remoteport=$2  
+remotehost=$3 
+red="\033[31m"
+black="\033[0m"
+
+echo  "转发规则：本地端口[$localport]=>[$remotehost:$remoteport]"
 remoteIP=unknown
 
-if [ $USER != "root" ];then
+if [ "$USER" != "root" ];then
     echo   -e "${red}请使用root用户执行本脚本!! ${black}"
     exit 1
 fi
@@ -18,7 +59,15 @@ if [ "$remotehost" = "" ];then
     exit 1
 fi
 
-# 检查输入的是一个域名
+# 判断端口是否为数字
+echo "$localport"|[ -n "`sed -n '/^[0-9][0-9]*$/p'`" ] && echo $remoteport |[ -n "`sed -n '/^[0-9][0-9]*$/p'`" ]&& valid=true
+if [ "$valid" = "" ];then
+   echo  -e "${red}本地端口和目标端口请输入数字！！${black}"
+   exit 1;
+fi
+
+
+# 检查输入的不是IP
 if [ "$(echo  $remotehost |grep -E -o '([0-9]{1,3}[\.]){3}[0-9]{1,3}')" != "" ];then
     isip=true
     remote=$remotehost
@@ -57,7 +106,7 @@ iptables --policy FORWARD ACCEPT
 ## 获取本机地址
 local=$(ip -o -4 addr list | grep -Ev '\s(docker|lo)' | awk '{print $4}' | cut -d/ -f1 | grep -Ev '(^127\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$)|(^10\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$)|(^172\.1[6-9]{1}[0-9]{0,1}\.[0-9]{1,3}\.[0-9]{1,3}$)|(^172\.2[0-9]{1}[0-9]{0,1}\.[0-9]{1,3}\.[0-9]{1,3}$)|(^172\.3[0-1]{1}[0-9]{0,1}\.[0-9]{1,3}\.[0-9]{1,3}$)|(^192\.168\.[0-9]{1,3}\.[0-9]{1,3}$)')
 if [ "${local}" = "" ]; then
-	local=$(ip -o -4 addr list | grep -Ev '\s(docker|lo)' | awk '{print $4}' | cut -d/ -f1 )
+        local=$(ip -o -4 addr list | grep -Ev '\s(docker|lo)' | awk '{print $4}' | cut -d/ -f1 )
 fi
 echo  "3.本机网卡IP——$local"
 echo "4.开启动态转发！"
@@ -65,7 +114,7 @@ echo ""
 
 
 while true ;
-do 
+do
     remote=$(host -t a  $remotehost|grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}")
     if [ "$remote" = "" ];then
         echo -e "${red}无法解析remotehost，请填写正确的remotehost！${black}"
@@ -87,7 +136,7 @@ do
             iptables -t nat  -D PREROUTING $index
             # echo ==清除对应的POSTROUTING规则
             toRmIndexs=(`iptables -L POSTROUTING -n -t nat --line-number|grep $targetIP|grep $targetPort|grep $proto|awk  '{print $1}'|sort -r|tr "\n" " "`)
-            for cell1 in ${toRmIndexs[@]} 
+            for cell1 in ${toRmIndexs[@]}
             do
                 iptables -t nat  -D POSTROUTING $cell1
             done
@@ -97,7 +146,7 @@ do
         iptables -t nat -A PREROUTING -p tcp --dport $localport -j DNAT --to-destination $remote:$remoteport
         iptables -t nat -A PREROUTING -p udp --dport $localport -j DNAT --to-destination $remote:$remoteport
         iptables -t nat -A POSTROUTING -p tcp -d $remote --dport $remoteport -j SNAT --to-source $local
-        iptables -t nat -A POSTROUTING -p udp -d $remote --dport $remoteport -j SNAT --to-source $local 
+        iptables -t nat -A POSTROUTING -p udp -d $remote --dport $remoteport -j SNAT --to-source $local
         echo "###########################################################"
         iptables -L PREROUTING -n -t nat
         iptables -L POSTROUTING -n -t nat
@@ -107,5 +156,31 @@ do
 
         remoteIP=$remote
     fi
-    sleep 30
+    sleep 120
 done;
+EOF
+
+cat > /lib/systemd/system/dnat.service <<\EOF
+[Unit]
+Description=动态设置iptables转发规则
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+WorkingDirectory=/root/
+EnvironmentFile=/etc/dnat/dnat.conf
+ExecStart=/bin/bash /usr/local/bin/dnat.sh $localport $remoteport $remotehost
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl daemon-reload
+systemctl enable dnat
+service dnat stop
+service dnat start
+
+echo  "已设置转发规则：本地端口[$localport]=>[$remotehost:$remoteport]"
+echo  "输入 journalctl -exu dnat 查看日志"

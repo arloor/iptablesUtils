@@ -22,21 +22,6 @@
 wget -O iptables.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/iptables.sh;bash iptables.sh;
 ```
 
-输出如下：
-```shell
-本脚本用途：
-设置本机tcp和udp端口转发
-原始iptables仅支持ip地址，该脚本增加域名支持（要求域名指向的主机ip不变）
-若要支持ddns，请使用 https://raw.githubusercontent.com/arloor/iptablesUtils/master/setCroniptablesDDNS.sh;
-
-local port:8388
-remote port:1234
-target domain/ip:xxx.com
-target-ip: xx.xx.xx.xx
-local-ip: xx.xx.xx.xx
-done!
-```
-
 # dnat-install.sh
 ```
 wget -O dnat-install.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/dnat-install.sh
@@ -46,6 +31,7 @@ bash dnat-install.sh
 按照要求输入三个参数：本地端口号、远程端口号、远程ddns域名即可。该脚本默认开机自启动。
 
 可以使用`journalctl -exu dnat`查看日志，日志形式如下：
+
 ```shell
 8月 28 20:53:41 cn2 bash[17546]: 转发规则：本地端口[80]=>[github.com:80]
 8月 28 20:53:41 cn2 bash[17546]: 正在安装依赖....

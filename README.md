@@ -73,7 +73,7 @@ wget -O rmPreNatRule.sh https://raw.githubusercontent.com/arloor/iptablesUtils/m
 这个最方便
 
 ```
-wget -O dnat-install.sh wget https://raw.githubusercontent.com/arloor/iptablesUtils/master/dnat-install.sh
+wget -O dnat-install.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/dnat-install.sh
 bash dnat-install.sh
 ```
 

@@ -185,4 +185,4 @@ service dnat$localport stop
 service dnat$localport start
 
 echo  "已设置转发规则：本地端口[$localport]=>[$remotehost:$remoteport]"
-echo  "输入 journalctl -exu dnat$localport 查看日志"
+echo  -e "输入 ${red}journalctl -exu dnat$localport${black} 查看日志"

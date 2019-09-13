@@ -25,6 +25,12 @@ if [ "$(echo  $remotehost |grep -E -o '([0-9]{1,3}[\.]){3}[0-9]{1,3}')" != "" ];
     exit 1
 fi
 
+echo "正在安装依赖...."
+yum install -y bind-utils &> /dev/null
+apt install -y dnsutils &> /dev/null
+echo "Completed：依赖安装完毕"
+echo ""
+
 mkdir /etc/dnat
 cat > /etc/dnat/$localport.conf <<EOF
 #本地端口号
@@ -77,12 +83,6 @@ if [ "$(echo  $remotehost |grep -E -o '([0-9]{1,3}[\.]){3}[0-9]{1,3}')" != "" ];
     echo -e "${red}所以remotehost参数应该是动态ip的vps的ddns域名${black}"
     exit 1
 fi
-
-echo "正在安装依赖...."
-yum install -y bind-utils &> /dev/null
-apt install -y dnsutils &> /dev/null
-echo "Completed：依赖安装完毕"
-echo ""
 
 # 开启端口转发
 echo "1.端口转发开启  【成功】"
@@ -185,4 +185,4 @@ service dnat$localport stop
 service dnat$localport start
 
 echo  "已设置转发规则：本地端口[$localport]=>[$remotehost:$remoteport]"
-echo  "输入 journalctl -exu dnat$localport 查看日志"
+echo  -e "输入 ${red}journalctl -exu dnat$localport${black} 查看日志"

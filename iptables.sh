@@ -106,3 +106,9 @@ iptables -t nat -A PREROUTING -p udp --dport $localport -j DNAT --to-destination
 iptables -t nat -A POSTROUTING -p tcp -d $remote --dport $remoteport -j SNAT --to-source $local
 iptables -t nat -A POSTROUTING -p udp -d $remote --dport $remoteport -j SNAT --to-source $local
 echo 端口转发成功
+echo "###########################################################"
+echo  -e "当前NAT表如下：(仅供专业人士debug用)"
+iptables -L PREROUTING -n -t nat
+iptables -L POSTROUTING -n -t nat
+echo "###########################################################"
+

@@ -45,7 +45,7 @@ if [ "$(echo  $remotehost |grep -E -o '([0-9]{1,3}[\.]){3}[0-9]{1,3}')" != "" ];
     echo -e "${red}所以remotehost参数应该是动态ip的vps的ddns域名${black}"
     exit 1
 else
-    remote=$(host -t a  $remotehost|grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}")
+    remote=$(host -t a  $remotehost|grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}"|head -1)
     if [ "$remote" = "" ];then
         echo -e "${red}无法解析remotehost，请填写正确的remotehost！${black}"
         exit 1

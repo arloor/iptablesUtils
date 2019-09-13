@@ -82,7 +82,7 @@ bash rmPreNatRule.sh $localport
 
 1. 增加转发规则是一次性的
     1. iptables.sh在添加了几条iptables规则立即结束，不会有后台进程长时间运行消耗内存和CPU；
-    2. “一次性”的另一个意思是所设定的转发规则在重启机器后就会被删除——这是iptables的特性，当使用iptables-service可以保存这些规则使其重启时不被删除，但这里不介绍。
+    2. “一次性”的另一个意思是所设定的转发规则在重启机器后就会被删除——这是iptables的特性，使用iptables-service可以保存这些规则使其重启时不被删除，但这里不介绍。
 2.  重复对同一本地端口执行iptables.sh，会自动地覆盖（删除）之前设定的转发规则，不需要手动调用`rmPreNatRule.sh`
 
 

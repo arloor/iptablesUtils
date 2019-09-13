@@ -6,11 +6,11 @@
 red="\033[31m"
 black="\033[0m"
 
-if [ "$1" == "" ];then
-    echo '使用方式: bash rmPreNatRule.sh $localport'
-    exit 1
-fi
+#要删除的转发端口
 localport=$1
+if [  "$localport"  =  "" ];then
+    echo -n "要删除转发的本地端口:" ;read localport
+fi
 
 if [ $USER = "root" ];then
 	echo "本脚本用途："

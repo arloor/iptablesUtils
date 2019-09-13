@@ -30,8 +30,18 @@ bash dnat-install.sh
 
 按照要求输入三个参数：本地端口号、远程端口号、远程ddns域名即可。该脚本默认开机自启动。
 
+
+
 # rmPreNatRule.sh
 
 ```shell
 wget -O rmPreNatRule.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/rmPreNatRule.sh;bash rmPreNatRule.sh $localport
+```
+
+
+# 正在进行的工作...
+
+```
+wget -O dnat-uninstall.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/dnat-uninstall.sh
+bash dnat-uninstall.sh
 ```

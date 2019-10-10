@@ -6,9 +6,13 @@ mkdir $base 2>/dev/null
 conf=$base/conf
 touch $conf
 
-# wget -qO dnat-install.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/dnat-install.sh&&bash dnat-install.sh
+# wget -qO dnat-install.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/dnat-install.sh && bash dnat-install.sh
 
-wget -qO /usr/local/bin/dnat.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/dnat.sh
+wget -qO /usr/local/bin/dnat.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/dnat.sh||{
+    echo "脚本不存在，请通过github提交issue通知作者"
+    exit 1
+}
+
 
 cat > /lib/systemd/system/dnat.service <<\EOF
 [Unit]
@@ -28,7 +32,7 @@ WantedBy=multi-user.target
 EOF
 
 systemctl daemon-reload
-systemctl enable dnat
+systemctl enable dnat > /dev/null 2>&1
 service dnat stop > /dev/null 2>&1
 service dnat start > /dev/null 2>&1
 

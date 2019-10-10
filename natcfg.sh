@@ -107,6 +107,27 @@ rmDnat(){
     rm -f $base/${1}IP  
 }
 
+testVars(){
+    local localport=$1
+    local remotehost=$2
+    local remoteport=$3
+    # 判断端口是否为数字
+    local valid=
+    echo "$localport"|[ -n "`sed -n '/^[0-9][0-9]*$/p'`" ] && echo $remoteport |[ -n "`sed -n '/^[0-9][0-9]*$/p'`" ]||{
+       # echo  -e "${red}本地端口和目标端口请输入数字！！${black}";
+       return 1;
+    }
+
+    # 检查输入的不是IP
+    if [ "$(echo  $remotehost |grep -E -o '([0-9]{1,3}[\.]){3}[0-9]{1,3}')" != "" ];then
+        local isip=true
+        local remote=$remotehost
+
+        # echo -e "${red}警告：你输入的目标地址是一个ip!${black}"
+        return 2;
+    fi
+}
+
 lsDnat(){
     arr1=(`cat $conf`)
 for cell in ${arr1[@]}  

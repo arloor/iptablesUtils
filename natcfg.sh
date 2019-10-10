@@ -9,8 +9,9 @@ touch $conf
 # wget -qO natcfg.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/natcfg.sh && bash natcfg.sh
 echo -e "${red}用途${black}: 便捷的设置iptables端口转发"
 echo -e "${red}注意${black}: 到IP的转发规则在重启后会失效，这是iptables的特性；而到域名的转发重启后仍然有效"
-echo "下载依赖...."
-wget -qO /usr/local/bin/dnat.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/dnat.sh||{
+
+setupService(){
+    wget -qO /usr/local/bin/dnat.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/dnat.sh||{
     echo "脚本不存在，请通过github提交issue通知作者"
     exit 1
 }
@@ -38,6 +39,8 @@ systemctl daemon-reload
 systemctl enable dnat > /dev/null 2>&1
 service dnat stop > /dev/null 2>&1
 service dnat start > /dev/null 2>&1
+}
+
 
 ## 获取本机地址
 localIP=$(ip -o -4 addr list | grep -Ev '\s(docker|lo)' | awk '{print $4}' | cut -d/ -f1 | grep -Ev '(^127\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$)|(^10\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$)|(^172\.1[6-9]{1}[0-9]{0,1}\.[0-9]{1,3}\.[0-9]{1,3}$)|(^172\.2[0-9]{1}[0-9]{0,1}\.[0-9]{1,3}\.[0-9]{1,3}$)|(^172\.3[0-1]{1}[0-9]{0,1}\.[0-9]{1,3}\.[0-9]{1,3}$)|(^192\.168\.[0-9]{1,3}\.[0-9]{1,3}$)')
@@ -89,11 +92,14 @@ addDnat(){
         return 1
     fi
 
+    setupService
+
     sed -i "s/^$localport.*/$localport>$remotehost:$remoteport/g" $conf
     [ "$(cat $conf|grep "$localport>$remotehost:$remoteport")" = "" ]&&{
             cat >> $conf <<LINE
 $localport>$remotehost:$remoteport
 LINE
+    echo "成功添加转发规则 $localport>$remotehost:$remoteport"
     }
 }
 

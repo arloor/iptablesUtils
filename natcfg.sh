@@ -8,7 +8,7 @@ touch $conf
 
 # wget -qO natcfg.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/natcfg.sh && bash natcfg.sh
 echo -e "${red}用途${black}: 使用iptables便捷地设置端口流量转发"
-echo -e "${red}注意${black}: 到IP的转发规则在重启后会丢失，这是iptables的特性；至域名的转发重启后仍然有效"
+echo -e "${red}注意${black}: 到IP的转发规则在重启后会失效，这是iptables的特性；而到域名的转发重启后仍然有效"
 echo "下载依赖...."
 wget -qO /usr/local/bin/dnat.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/dnat.sh||{
     echo "脚本不存在，请通过github提交issue通知作者"

@@ -170,7 +170,6 @@ do
         ;;
     列出所有到域名的转发)
         lsDnat
-        break
         ;;
     增加到IP的转发)
         addSnat

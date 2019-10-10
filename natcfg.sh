@@ -80,7 +80,7 @@ addDnat(){
         return 1;
     }
 
-    echo -n "目标域名":" ;read remotehost
+    echo -n "目标域名:" ;read remotehost
     # 检查输入的不是IP
     if [ "$remotehost" = "" -o "$(echo  $remotehost |grep -E -o '([0-9]{1,3}[\.]){3}[0-9]{1,3}')" != "" ];then
         isip=true

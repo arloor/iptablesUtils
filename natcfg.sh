@@ -156,7 +156,7 @@ rmSnat(){
 
 
 
-echo  -e "${red}你要做什么呢？${black}"
+echo  -e "${red}你要做什么呢？Ctrl+C 退出${black}"
 select todo in 增加到域名的转发 删除到域名的转发 列出所有到域名的转发 增加到IP的转发 删除到IP的转发
 do
     case $todo in

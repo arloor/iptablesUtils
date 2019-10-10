@@ -1,46 +1,13 @@
-#! /bin/bash
-echo -n "本地端口号:" ;read localport
-echo -n "远程端口号:" ;read remoteport
-echo -n "目标DDNS:" ;read remotehost
-
 red="\033[31m"
 black="\033[0m"
 
-# 判断端口是否为数字
-echo "$localport"|[ -n "`sed -n '/^[0-9][0-9]*$/p'`" ] && echo $remoteport |[ -n "`sed -n '/^[0-9][0-9]*$/p'`" ]&& valid=true
-if [ "$valid" = "" ];then
-   echo  -e "${red}本地端口和目标端口请输入数字！！${black}"
-   exit 1;
-fi
+base=/etc/dnat
+mkdir $base 2>/dev/null
+conf=$base/conf
+touch $conf
 
 
-# 检查输入的不是IP
-if [ "$(echo  $remotehost |grep -E -o '([0-9]{1,3}[\.]){3}[0-9]{1,3}')" != "" ];then
-    isip=true
-    remote=$remotehost
-
-    echo -e "${red}警告：你输入的目标地址是一个ip!${black}"
-    echo -e "${red}该脚本的目标是，使用iptables中转到动态ip的vps${black}"
-    echo -e "${red}所以remotehost参数应该是动态ip的vps的ddns域名${black}"
-    exit 1
-fi
-
-echo "正在安装依赖...."
-yum install -y bind-utils &> /dev/null
-apt install -y dnsutils &> /dev/null
-echo "Completed：依赖安装完毕"
-echo ""
-
-mkdir /etc/dnat 2>/dev/null
-
-touch /etc/dnat/conf
-sed -i "s/$localport>.*/$localport>$remotehost:$remoteport/g" /etc/dnat/conf
-
-sed -i '1i\$localport>$remotehost:$remoteport' /etc/dnat/conf
-cat /etc/dnat/conf
-
-
-
+wget -qO /usr/local/bin/dnat.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/dnat.sh
 
 cat > /lib/systemd/system/dnat.service <<\EOF
 [Unit]
@@ -63,3 +30,134 @@ systemctl daemon-reload
 systemctl enable dnat
 service dnat stop
 service dnat start
+
+## 获取本机地址
+localIP=$(ip -o -4 addr list | grep -Ev '\s(docker|lo)' | awk '{print $4}' | cut -d/ -f1 | grep -Ev '(^127\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$)|(^10\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$)|(^172\.1[6-9]{1}[0-9]{0,1}\.[0-9]{1,3}\.[0-9]{1,3}$)|(^172\.2[0-9]{1}[0-9]{0,1}\.[0-9]{1,3}\.[0-9]{1,3}$)|(^172\.3[0-1]{1}[0-9]{0,1}\.[0-9]{1,3}\.[0-9]{1,3}$)|(^192\.168\.[0-9]{1,3}\.[0-9]{1,3}$)')
+if [ "${localIP}" = "" ]; then
+        localIP=$(ip -o -4 addr list | grep -Ev '\s(docker|lo)' | awk '{print $4}' | cut -d/ -f1|head -n 1 )
+fi
+echo  "3.本机网卡IP——$localIP"
+
+rmIptablesNat(){
+    #删除旧的中转规则
+        local arr1=(`iptables -L PREROUTING -n -t nat --line-number |grep DNAT|grep "dpt:$1 "|sort -r|awk '{print $1,$3,$9}'|tr " " ":"|tr "\n" " "`)
+        for cell in ${arr1[@]}  # cell= 1:tcp:to:8.8.8.8:543
+        do
+            local arr2=(`echo $cell|tr ":" " "`)  #arr2=(1 tcp to 8.8.8.8 543)
+            local index=${arr2[0]}
+            local proto=${arr2[1]}
+            local targetIP=${arr2[3]}
+            local targetPort=${arr2[4]}
+            # echo 清除本机$localport端口到$targetIP:$targetPort的${proto}的PREROUTING转发规则[$index]
+            iptables -t nat  -D PREROUTING $index
+            # echo ==清除对应的POSTROUTING规则
+            local toRmIndexs=(`iptables -L POSTROUTING -n -t nat --line-number|grep SNAT|grep $targetIP|grep dpt:$targetPort|grep $proto|awk  '{print $1}'|sort -r|tr "\n" " "`)
+            for cell1 in ${toRmIndexs[@]}
+            do
+                iptables -t nat  -D POSTROUTING $cell1
+            done
+        done
+}
+
+addDnat(){
+    local localport=
+    local remoteport=
+    local remotehost=
+    local valid=
+    echo -n "本地端口号:" ;read localport
+    echo -n "远程端口号:" ;read remoteport
+    # echo $localport $remoteport
+    # 判断端口是否为数字
+    echo "$localport"|[ -n "`sed -n '/^[0-9][0-9]*$/p'`" ] && echo $remoteport |[ -n "`sed -n '/^[0-9][0-9]*$/p'`" ]||{
+        echo  -e "${red}本地端口和目标端口请输入数字！！${black}"
+        return 1;
+    }
+
+    echo -n "目标DDNS:" ;read remotehost
+    # 检查输入的不是IP
+    if [ "$remotehost" = "" -o "$(echo  $remotehost |grep -E -o '([0-9]{1,3}[\.]){3}[0-9]{1,3}')" != "" ];then
+        isip=true
+        remote=$remotehost
+        echo -e "${red}请输入一个ddns域名${black}"
+        return 1
+    fi
+
+    sed -i "s/^$localport.*/$localport>$remotehost:$remoteport/g" $conf
+    [ "$(cat $conf|grep "$localport>$remotehost:$remoteport")" = "" ]&&{
+            cat >> $conf <<LINE
+$localport>$remotehost:$remoteport
+LINE
+    }
+}
+
+rmDnat(){
+    local localport=
+    echo -n "本地端口号:" ;read localport
+    sed -i "/^$localport>.*/d" $conf
+
+    rmIptablesNat $localport
+    #删除临时文件  
+    rm -f $base/${1}IP  
+}
+
+addSnat(){
+    local localport=
+    local remoteport=
+    local remotehost=
+    echo -n "本地端口号:" ;read localport
+    echo -n "远程端口号:" ;read remoteport
+    # echo $localport $remoteport
+    # 判断端口是否为数字
+    echo "$localport"|[ -n "`sed -n '/^[0-9][0-9]*$/p'`" ] && echo $remoteport |[ -n "`sed -n '/^[0-9][0-9]*$/p'`" ]||{
+        echo  -e "${red}本地端口和目标端口请输入数字！！${black}"
+        return 1;
+    }
+
+    echo -n "目标DDNS:" ;read remotehost
+    # 检查输入的不是IP
+    if [ "$remotehost" = "" -o "$(echo  $remotehost |grep -E -o '([0-9]{1,3}[\.]){3}[0-9]{1,3}')" != "" ];then
+        rmIptablesNat $localport
+
+        ## 建立新的中转规则
+        iptables -t nat -A PREROUTING -p tcp --dport $localport -j DNAT --to-destination $remotehost:$remoteport
+        iptables -t nat -A PREROUTING -p udp --dport $localport -j DNAT --to-destination $remotehost:$remoteport
+        iptables -t nat -A POSTROUTING -p tcp -d $remotehost --dport $remoteport -j SNAT --to-source $localIP
+        iptables -t nat -A POSTROUTING -p udp -d $remotehost --dport $remoteport -j SNAT --to-source $localIP
+    else
+        echo 请输入一个IP
+        return 1
+    fi    
+}
+
+rmSnat(){
+    local localport=
+    echo -n "本地端口号:" ;read localport
+    echo "$localport"|[ -n "`sed -n '/^[0-9][0-9]*$/p'`" ] &&rmIptablesNat $localport
+}
+
+
+echo "要做什么呢？"
+select todo in 增加动态解析转发 删除动态解析转发 增加静态解析转发 删除静态解析转发
+do
+    case $todo in
+    增加动态解析转发)
+        addDnat
+        break
+        ;;
+    删除动态解析转发)
+        rmDnat
+        break
+        ;;
+    增加静态解析转发)
+        addSnat
+        break
+        ;;
+    删除静态解析转发)
+        rmSnat
+        break
+        ;;
+    *)
+        echo "如果要退出，请按Ctrl+C"
+        ;;
+    esac
+done

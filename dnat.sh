@@ -1,3 +1,4 @@
+#! /bin/bash
 [[ "$EUID" -ne '0' ]] && echo "Error:This script must be run as root!" && exit 1;
 
 
@@ -5,9 +6,6 @@
 base=/etc/dnat
 mkdir $base 2>/dev/null
 conf=$base/conf
-cat > $conf<<\EOF
-80>arloor.com:80
-EOF
 
 
 ####

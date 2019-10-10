@@ -7,11 +7,14 @@ conf=$base/conf
 touch $conf
 
 # wget -qO natcfg.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/natcfg.sh && bash natcfg.sh
-
+echo "${red}用途${black}: 使用iptables便捷地设置端口流量转发"
+echo "${red}注意${black}: 到IP的转发规则在重启后会丢失，这是iptables的特性；至域名的转发重启后仍然有效"
+echo "下载依赖...."
 wget -qO /usr/local/bin/dnat.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/dnat.sh||{
     echo "脚本不存在，请通过github提交issue通知作者"
     exit 1
 }
+echo 
 
 
 cat > /lib/systemd/system/dnat.service <<\EOF
@@ -141,8 +144,7 @@ rmSnat(){
 
 clear
 
-echo "${red}用途${black}: 使用iptables便捷地设置端口流量转发"
-echo "${red}注意${black}: 到IP的转发规则在重启后会丢失，这是iptables的特性；至域名的转发重启后仍然有效"
+
 
 echo  -e "${red}你要做什么呢？${black}"
 select todo in 增加到域名的转发 删除到域名的转发 增加到IP的转发 删除到IP的转发

@@ -12,10 +12,10 @@ echo -e "${red}注意${black}: 到IP的转发规则在重启后会失效，这�
 
 setupService(){
     wget -qO /usr/local/bin/dnat.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/dnat.sh||{
-    echo "脚本不存在，请通过github提交issue通知作者"
-    exit 1
-}
-echo 
+        echo "脚本不存在，请通过github提交issue通知作者"
+        exit 1
+    }
+    echo 
 
 
 cat > /lib/systemd/system/dnat.service <<\EOF

@@ -139,8 +139,8 @@ rmSnat(){
     echo "$localport"|[ -n "`sed -n '/^[0-9][0-9]*$/p'`" ] &&rmIptablesNat $localport
 }
 
-
-echo "要做什么呢？"
+clear
+echo  -e "${red}要做什么呢？${black}"
 select todo in 增加动态解析转发 删除动态解析转发 增加静态解析转发 删除静态解析转发
 do
     case $todo in

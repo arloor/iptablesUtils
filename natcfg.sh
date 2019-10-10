@@ -107,6 +107,18 @@ rmDnat(){
     rm -f $base/${1}IP  
 }
 
+lsDnat(){
+    arr1=(`cat $conf`)
+for cell in ${arr1[@]}  
+do
+    arr2=(`echo $cell|tr ":" " "|tr ">" " "`)  #arr2=16 REJECT 0.0.0.0/0
+    # 过滤非法的行
+    [ "${arr2[2]}" != "" -a "${arr2[3]}" = "" ]&& testVars ${arr2[0]}  ${arr2[1]} ${arr2[2]}&&{
+        echo "转发规则${arr2[0]}>${arr2[1]}:${arr2[2]}"
+    }
+done
+}
+
 addSnat(){
     local localport=
     local remoteport=
@@ -145,7 +157,7 @@ rmSnat(){
 
 
 echo  -e "${red}你要做什么呢？${black}"
-select todo in 增加到域名的转发 删除到域名的转发 增加到IP的转发 删除到IP的转发
+select todo in 增加到域名的转发 删除到域名的转发 列出所有到域名的转发 增加到IP的转发 删除到IP的转发
 do
     case $todo in
     增加到域名的转发)
@@ -154,6 +166,10 @@ do
         ;;
     删除到域名的转发)
         rmDnat
+        break
+        ;;
+    列出所有到域名的转发)
+        lsDnat
         break
         ;;
     增加到IP的转发)

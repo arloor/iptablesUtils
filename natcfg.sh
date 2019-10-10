@@ -184,7 +184,7 @@ rmSnat(){
 
 
 
-echo  -e "${red}你要做什么呢？Ctrl+C 退出${black}"
+echo  -e "${red}你要做什么呢（请输入数字）？Ctrl+C 退出本脚本${black}"
 select todo in 增加到域名的转发 删除到域名的转发 增加到IP的转发 删除到IP的转发 列出所有到域名的转发 查看iptables转发规则
 do
     case $todo in

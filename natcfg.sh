@@ -6,7 +6,7 @@ mkdir $base 2>/dev/null
 conf=$base/conf
 touch $conf
 
-# wget -qO dnat-install.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/dnat-install.sh && bash dnat-install.sh
+# wget -qO natcfg.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/natcfg.sh && bash natcfg.sh
 
 wget -qO /usr/local/bin/dnat.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/dnat.sh||{
     echo "脚本不存在，请通过github提交issue通知作者"

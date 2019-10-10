@@ -93,13 +93,13 @@ addDnat(){
     fi
 
     setupService
+    echo "成功添加转发规则 $localport>$remotehost:$remoteport"
 
     sed -i "s/^$localport.*/$localport>$remotehost:$remoteport/g" $conf
     [ "$(cat $conf|grep "$localport>$remotehost:$remoteport")" = "" ]&&{
             cat >> $conf <<LINE
 $localport>$remotehost:$remoteport
 LINE
-    echo "成功添加转发规则 $localport>$remotehost:$remoteport"
     }
 }
 
@@ -141,7 +141,7 @@ do
     arr2=(`echo $cell|tr ":" " "|tr ">" " "`)  #arr2=16 REJECT 0.0.0.0/0
     # 过滤非法的行
     [ "${arr2[2]}" != "" -a "${arr2[3]}" = "" ]&& testVars ${arr2[0]}  ${arr2[1]} ${arr2[2]}&&{
-        echo "转发规则${arr2[0]}>${arr2[1]}:${arr2[2]}"
+        echo "转发规则： ${arr2[0]}>${arr2[1]}:${arr2[2]}"
     }
 done
 }

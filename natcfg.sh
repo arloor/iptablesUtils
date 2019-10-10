@@ -142,8 +142,6 @@ rmSnat(){
     echo "$localport"|[ -n "`sed -n '/^[0-9][0-9]*$/p'`" ] &&rmIptablesNat $localport
 }
 
-clear
-
 
 
 echo  -e "${red}你要做什么呢？${black}"

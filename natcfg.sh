@@ -77,7 +77,7 @@ addDnat(){
         return 1;
     }
 
-    echo -n "目标DDNS:" ;read remotehost
+    echo -n "目标域名":" ;read remotehost
     # 检查输入的不是IP
     if [ "$remotehost" = "" -o "$(echo  $remotehost |grep -E -o '([0-9]{1,3}[\.]){3}[0-9]{1,3}')" != "" ];then
         isip=true
@@ -117,7 +117,7 @@ addSnat(){
         return 1;
     }
 
-    echo -n "目标DDNS:" ;read remotehost
+    echo -n "目标IP:" ;read remotehost
     # 检查输入的不是IP
     if [ "$remotehost" = "" -o "$(echo  $remotehost |grep -E -o '([0-9]{1,3}[\.]){3}[0-9]{1,3}')" != "" ];then
         rmIptablesNat $localport
@@ -140,23 +140,27 @@ rmSnat(){
 }
 
 clear
-echo  -e "${red}要做什么呢？${black}"
-select todo in 增加动态解析转发 删除动态解析转发 增加静态解析转发 删除静态解析转发
+
+echo "${red}用途${black}: 使用iptables便捷地设置端口流量转发"
+echo "${red}注意${black}: 到IP的转发规则在重启后会丢失，这是iptables的特性；至域名的转发重启后仍然有效"
+
+echo  -e "${red}你要做什么呢？${black}"
+select todo in 增加到域名的转发 删除到域名的转发 增加到IP的转发 删除到IP的转发
 do
     case $todo in
-    增加动态解析转发)
+    增加到域名的转发)
         addDnat
         break
         ;;
-    删除动态解析转发)
+    删除到域名的转发)
         rmDnat
         break
         ;;
-    增加静态解析转发)
+    增加到IP的转发)
         addSnat
         break
         ;;
-    删除静态解析转发)
+    删除到IP的转发)
         rmSnat
         break
         ;;

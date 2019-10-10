@@ -6,6 +6,7 @@ mkdir $base 2>/dev/null
 conf=$base/conf
 touch $conf
 
+# wget -qO dnat-install.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/dnat-install.sh&&bash dnat-install.sh
 
 wget -qO /usr/local/bin/dnat.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/dnat.sh
 
@@ -28,15 +29,14 @@ EOF
 
 systemctl daemon-reload
 systemctl enable dnat
-service dnat stop
-service dnat start
+service dnat stop > /dev/null 2>&1
+service dnat start > /dev/null 2>&1
 
 ## 获取本机地址
 localIP=$(ip -o -4 addr list | grep -Ev '\s(docker|lo)' | awk '{print $4}' | cut -d/ -f1 | grep -Ev '(^127\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$)|(^10\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$)|(^172\.1[6-9]{1}[0-9]{0,1}\.[0-9]{1,3}\.[0-9]{1,3}$)|(^172\.2[0-9]{1}[0-9]{0,1}\.[0-9]{1,3}\.[0-9]{1,3}$)|(^172\.3[0-1]{1}[0-9]{0,1}\.[0-9]{1,3}\.[0-9]{1,3}$)|(^192\.168\.[0-9]{1,3}\.[0-9]{1,3}$)')
 if [ "${localIP}" = "" ]; then
         localIP=$(ip -o -4 addr list | grep -Ev '\s(docker|lo)' | awk '{print $4}' | cut -d/ -f1|head -n 1 )
 fi
-echo  "3.本机网卡IP——$localIP"
 
 rmIptablesNat(){
     #删除旧的中转规则

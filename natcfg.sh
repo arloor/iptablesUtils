@@ -8,7 +8,8 @@ touch $conf
 
 # wget -qO natcfg.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/natcfg.sh && bash natcfg.sh
 echo -e "${red}用途${black}: 便捷的设置iptables端口转发"
-echo -e "${red}注意${black}: 到IP的转发规则在重启后会失效，这是iptables的特性；而到域名的转发重启后仍然有效"
+echo -e "${red}注意1${black}: 到域名的转发规则在添加后需要等待2分钟才会生效，且在机器重启后仍然有效"
+echo -e "${red}注意2${black}: 到IP的转发规则在重启后会失效，这是iptables的特性"
 
 setupService(){
     wget -qO /usr/local/bin/dnat.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/dnat.sh||{
@@ -184,7 +185,7 @@ rmSnat(){
 
 
 echo  -e "${red}你要做什么呢？Ctrl+C 退出${black}"
-select todo in 增加到域名的转发 删除到域名的转发 列出所有到域名的转发 增加到IP的转发 删除到IP的转发
+select todo in 增加到域名的转发 删除到域名的转发 增加到IP的转发 删除到IP的转发 列出所有到域名的转发 查看iptables转发规则
 do
     case $todo in
     增加到域名的转发)
@@ -195,9 +196,6 @@ do
         rmDnat
         break
         ;;
-    列出所有到域名的转发)
-        lsDnat
-        ;;
     增加到IP的转发)
         addSnat
         break
@@ -205,6 +203,15 @@ do
     删除到IP的转发)
         rmSnat
         break
+        ;;
+    列出所有到域名的转发)
+        lsDnat
+        ;;
+    查看iptables转发规则)
+        echo "###########################################################"
+        iptables -L PREROUTING -n -t nat --line-number
+        iptables -L POSTROUTING -n -t nat --line-number
+        echo "###########################################################"
         ;;
     *)
         echo "如果要退出，请按Ctrl+C"

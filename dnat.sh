@@ -6,6 +6,7 @@
 base=/etc/dnat
 mkdir $base 2>/dev/null
 conf=$base/conf
+firstAfterBoot=1
 
 
 ####
@@ -112,6 +113,10 @@ dnatIfNeed(){
         needNat=1
         fi
 
+        if [ "$firstAfterBoot" = "1"];then
+            needNat=1
+        fi
+        
         echo $remote >$base/${1}IP
         [ "$needNat" = "1" ]&& dnat $1 $remote $3
 }
@@ -138,5 +143,6 @@ echo "###########################################################"
 iptables -L PREROUTING -n -t nat --line-number
 iptables -L POSTROUTING -n -t nat --line-number
 echo "###########################################################"
+firstAfterBoot=0
 sleep 60
 done

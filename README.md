@@ -17,6 +17,12 @@
 wget -qO natcfg.sh http://arloor.com/sh/iptablesUtils/natcfg.sh && bash natcfg.sh
 ```
 
+或
+
+```
+wget -qO natcfg.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/natcfg.sh && bash natcfg.sh
+```
+
 输出如下：
 
 ```

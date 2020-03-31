@@ -84,4 +84,15 @@ https://github.com/arloor
 
 念念不忘，必有回响好吧🤮
 
+## 2020年3月31日 挂一个抄袭的网站
 
+[https://blog.6y.ee/2020/03/03/12.html](https://blog.6y.ee/2020/03/03/12.html)
+[https://blog.6y.ee/2020/03/03/13.html](https://blog.6y.ee/2020/03/03/13.html)
+
+抄袭真的简单啊。我成功给他贡献了前两篇文章
+
+```
+Powered by Typecho | Theme Miracles by Eltrac
+Copyright © 2020 6yun, All rights reserved.
+记录已延续了 28 天 11 小时 10 分 3 秒 _(:з」∠)_
+```

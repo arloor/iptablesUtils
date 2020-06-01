@@ -66,4 +66,7 @@ iptables的后继者nftables已经在debain和centos最新的操作系统中作�
 
 PS: 新旧两个项目并不兼容，因此在两个工具之间切换时，请全新安装指定系统以确保系统纯净。
 
+## 赏个鸡腿吧
+
+<img src="http://cdn.arloor.com/wechat_shoukuan.jpg" alt="" width="400px" style="max-width: 100%;">
 

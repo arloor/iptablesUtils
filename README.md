@@ -14,7 +14,7 @@
 
 走该链接下单任意产品我可以获得AFF：
 
-https://taoluyun.cc/aff.php?aff=309
+https://mjjidc.cc/aff.php?aff=309
 
 ## 用法
 

@@ -13,7 +13,7 @@ echo -e "${red}注意1${black}: 到域名的转发规则在添加后需要等待
 echo -e "${red}注意2${black}: 到IP的转发规则在重启后会失效，这是iptables的特性"
 echo
 setupService(){
-    wget -qO /usr/local/bin/dnat.sh http://www.arloor.com/sh/iptablesUtils/dnat.sh||{
+    wget -qO /usr/local/bin/dnat.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/dnat.sh||{
         echo "脚本不存在，请通过github提交issue通知作者"
         exit 1
     }

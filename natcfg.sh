@@ -6,13 +6,14 @@ mkdir $base 2>/dev/null
 conf=$base/conf
 touch $conf
 
-# wget -qO natcfg.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/natcfg.sh && bash natcfg.sh
+# wget -qO natcfg.sh http://www.arloor.com/sh/iptablesUtils/natcfg.sh && bash natcfg.sh
 echo -e "${red}用途${black}: 便捷的设置iptables端口转发"
+echo -e "${red}项目地址${black}: https://github.com/arloor/iptablesUtils"
 echo -e "${red}注意1${black}: 到域名的转发规则在添加后需要等待2分钟才会生效，且在机器重启后仍然有效"
 echo -e "${red}注意2${black}: 到IP的转发规则在重启后会失效，这是iptables的特性"
 echo
 setupService(){
-    wget -qO /usr/local/bin/dnat.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/dnat.sh||{
+    wget -qO /usr/local/bin/dnat.sh http://www.arloor.com/sh/iptablesUtils/dnat.sh||{
         echo "脚本不存在，请通过github提交issue通知作者"
         exit 1
     }
@@ -112,6 +113,7 @@ rmDnat(){
     rmIptablesNat $localport
     #删除临时文件  
     rm -f $base/${1}IP  
+    echo "done!"
 }
 
 testVars(){
@@ -190,19 +192,19 @@ do
     case $todo in
     增加到域名的转发)
         addDnat
-        break
+        #break
         ;;
     删除到域名的转发)
         rmDnat
-        break
+        #break
         ;;
     增加到IP的转发)
         addSnat
-        break
+        #break
         ;;
     删除到IP的转发)
         rmSnat
-        break
+        #break
         ;;
     列出所有到域名的转发)
         lsDnat

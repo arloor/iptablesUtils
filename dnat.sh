@@ -137,7 +137,7 @@ fi
 
 firstAfterBoot=0
 echo '' > $lastConfigTmp
-sleep 10
+sleep 60
 echo ''
 echo ''
 echo ''

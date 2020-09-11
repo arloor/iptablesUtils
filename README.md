@@ -57,9 +57,9 @@ iptables的后继者nftables已经在debain和centos最新的操作系统中作�
 
 因此创建了一个新的项目[/arloor/nftables-nat-rust](https://github.com/arloor/nftables-nat-rust)。该项目使用nftables作为nat转发实现，相比本项目具有如下优点：
 
-1. 支持端口段转发——[issue 3](https://github.com/arloor/iptablesUtils/issues/3)
-2. 转发规则使用配置文件，可以进行备份以及倒入——[issue 14](https://github.com/arloor/iptablesUtils/issues/14)
-3. 更加现代（听起来很帅有没有～
+1. 支持端口段转发
+2. 转发规则使用配置文件，可以进行备份以及导入
+3. 更加现代
 
 所以**强烈推荐**使用[/arloor/nftables-nat-rust](https://github.com/arloor/nftables-nat-rust)。不用担心，本项目依然可以正常稳定使用。
 

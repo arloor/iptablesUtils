@@ -14,12 +14,12 @@
 
 ```shell
 # 如果vps不能访问 raw.githubusercontent.com 推荐使用这个
-wget -qO natcfg.sh http://www.arloor.com/sh/iptablesUtils/natcfg.sh && bash natcfg.sh
+wget --no-check-certificate -qO natcfg.sh http://www.arloor.com/sh/iptablesUtils/natcfg.sh && bash natcfg.sh
 ```
 或
 
 ```
-wget -qO natcfg.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/natcfg.sh && bash natcfg.sh
+wget --no-check-certificate -qO natcfg.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/natcfg.sh && bash natcfg.sh
 ```
 
 输出如下：
@@ -40,7 +40,7 @@ wget -qO natcfg.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master
 ## 卸载
 
 ```shell
-wget -qO uninstall.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/dnat-uninstall.sh && bash uninstall.sh
+wget --no-check-certificate -qO uninstall.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/dnat-uninstall.sh && bash uninstall.sh
 ```
 
 ## trojan转发

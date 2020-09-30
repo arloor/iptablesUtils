@@ -25,17 +25,20 @@ wget --no-check-certificate -qO natcfg.sh https://raw.githubusercontent.com/arlo
 输出如下：
 
 ```
-用途: 便捷的设置iptables端口转发
-注意1: 到域名的转发规则在添加后需要等待2分钟才会生效，且在机器重启后仍然有效
-注意2: 到IP的转发规则在重启后会失效，这是iptables的特性
+#############################################################
+# Usage: setup iptables nat rules for domian/ip             #
+# Website:  http://www.arloor.com/                          #
+# Author: ARLOOR <admin@arloor.com>                         #
+# Github: https://github.com/arloor/iptablesUtils           #
+#############################################################
 
 你要做什么呢（请输入数字）？Ctrl+C 退出本脚本
-1) 增加到域名的转发      3) 增加到IP的转发        5) 列出所有到域名的转发
-2) 删除到域名的转发      4) 删除到IP的转发        6) 查看iptables转发规则
-#? 
+1) 增加转发规则          3) 列出所有转发规则
+2) 删除转发规则          4) 查看当前iptables配置
+#?
 ```
 
-此时按照需要，输入1-6中的任意数字，然后按照提示即可
+此时按照需要，输入1-4中的任意数字，然后按照提示即可
 
 ## 卸载
 
@@ -63,7 +66,7 @@ iptables的后继者nftables已经在debain和centos最新的操作系统中作�
 
 所以**强烈推荐**使用[/arloor/nftables-nat-rust](https://github.com/arloor/nftables-nat-rust)。不用担心，本项目依然可以正常稳定使用。
 
-PS: 新旧两个项目并不兼容，因此在两个工具之间切换时，请全新安装指定系统以确保系统纯净。
+PS: 新旧两个项目并不兼容，切换到新项目时，请先卸载此项目
 
 ## 赏个鸡腿吧
 

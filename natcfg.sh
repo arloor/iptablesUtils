@@ -1,6 +1,6 @@
 red="\033[31m"
 black="\033[0m"
-
+PATH=/usr/sbin:/sbin:/usr/bin:/bin
 base=/etc/dnat
 mkdir $base 2>/dev/null
 conf=$base/conf

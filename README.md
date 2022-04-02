@@ -1,7 +1,5 @@
 # 利用iptables设置端口转发的shell脚本
 
-电报讨论组 https://t.me/popstary
-
 ## 项目作用
 
 1. 便捷地设置iptables流量转发规则

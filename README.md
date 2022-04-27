@@ -42,6 +42,20 @@ wget --no-check-certificate -qO natcfg.sh https://raw.githubusercontent.com/arlo
 wget --no-check-certificate -qO uninstall.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/dnat-uninstall.sh && bash uninstall.sh
 ```
 
+## 查看日志
+
+```shell
+journalctl -exu dnat
+```
+
+## 配置文件备份和导入导出
+
+配置文件在
+
+```shell
+/etc/dnat/conf
+```
+
 ## trojan转发
 
 总是有人说，不能转发trojan，这么说的人大部分是证书配置不对。最简单的解决方案是：客户端选择不验证证书。复杂一点是自己把证书和中转机的域名搭配好。

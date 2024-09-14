@@ -10,7 +10,7 @@
 
 ```shell
 # 如果vps不能访问 raw.githubusercontent.com 推荐使用这个
-bash <(curl -fsSL https://www.arloor.com/sh/iptablesUtils/natcfg.sh)
+bash <(curl -fsSL https://us.arloor.dev/https://raw.githubusercontent.com/arloor/iptablesUtils/master/natcfg.sh)
 ```
 或
 

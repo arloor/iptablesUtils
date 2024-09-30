@@ -41,6 +41,16 @@ bash <(curl -fsSL https://raw.githubusercontent.com/arloor/iptablesUtils/master/
 
 ## 卸载
 
+**国内机器使用**
+
+> 通过Github Proxy加速下载
+
+```shell
+bash <(curl -SsLf https://us.arloor.dev/https://raw.githubusercontent.com/arloor/iptablesUtils/master/dnat-uninstall.sh)
+```
+
+**国外机器使用**
+
 ```shell
 bash <(curl -SsLf https://raw.githubusercontent.com/arloor/iptablesUtils/master/dnat-uninstall.sh)
 ```

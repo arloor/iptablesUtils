@@ -1,6 +1,5 @@
 #! /bin/bash
 
 base=/etc/dnat
-service dnat stop
-systemctl disable dnat
+systemctl disable --now dnat
 rm -rf $base

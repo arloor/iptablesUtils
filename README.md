@@ -7,18 +7,21 @@
 
 ## 用法
 
+**国内机器使用**
+
+> 通过Github Proxy加速下载
 
 ```shell
-# 如果vps不能访问 raw.githubusercontent.com 推荐使用这个
 bash <(curl -fsSL https://us.arloor.dev/https://raw.githubusercontent.com/arloor/iptablesUtils/master/natcfg.sh)
 ```
-或
+
+**国外机器使用**
 
 ```
 bash <(curl -fsSL https://raw.githubusercontent.com/arloor/iptablesUtils/master/natcfg.sh)
 ```
 
-输出如下：
+### 输出如下：
 
 ```
 #############################################################
@@ -34,12 +37,12 @@ bash <(curl -fsSL https://raw.githubusercontent.com/arloor/iptablesUtils/master/
 #?
 ```
 
-此时按照需要，输入1-4中的任意数字，然后按照提示即可
+此时按照需要，输入1-4中的任意数字，然后按照提示即可。`Ctrl+C` 退出本脚本
 
 ## 卸载
 
 ```shell
-wget --no-check-certificate -qO uninstall.sh https://raw.githubusercontent.com/arloor/iptablesUtils/master/dnat-uninstall.sh && bash uninstall.sh
+bash <(curl -SsLf https://raw.githubusercontent.com/arloor/iptablesUtils/master/dnat-uninstall.sh)
 ```
 
 ## 查看日志
@@ -78,7 +81,4 @@ iptables的后继者nftables已经在debain和centos最新的操作系统中作�
 
 PS: 新旧两个项目并不兼容，切换到新项目时，请先卸载此项目
 
-## 电报交流群
-
-[https://t.me/popstary](https://t.me/popstary)
 

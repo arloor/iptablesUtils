@@ -91,4 +91,5 @@ iptables的后继者nftables已经在debain和centos最新的操作系统中作�
 
 PS: 新旧两个项目并不兼容，切换到新项目时，请先卸载此项目
 
+[<img src="https://api.gitsponsors.com/api/badge/img?id=181041429" height="20">](https://api.gitsponsors.com/api/badge/link?p=IwNDRlsDVIhq1CcoSFPiuliceRxy+5YfQuXqG4fOqa1j+XKxfsw61je0Y28ay9Yc)
 
